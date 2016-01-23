@@ -5,9 +5,19 @@
 
 class Robot: public IterativeRobot
 {
+
+	Talon shooter;
+
+public:
+	SendableChooser *chooser;
+
+	Robot():
+		shooter(2)
+		{
+		}
+
 private:
 	std::unique_ptr<Command> autonomousCommand;
-	SendableChooser *chooser;
 
 	void RobotInit()
 	{
@@ -69,6 +79,8 @@ private:
 		// this line or comment it out.
 		if (autonomousCommand != NULL)
 			autonomousCommand->Cancel();
+
+		shooter.Set(0.5);
 	}
 
 	void TeleopPeriodic()
