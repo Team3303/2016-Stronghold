@@ -28,7 +28,6 @@ class Robot: public IterativeRobot
 	float rstick_y() { return stick.GetRawAxis(4); }
 
 
-
 public:
 	Robot() :
 		myRobot(0, 1),	// these must be initialized in the same order
@@ -83,7 +82,7 @@ private:
 
 	void TeleopPeriodic()
 	{
-		myRobot.ArcadeDrive(stick); // drive with arcade style (use right stick)
+		//myRobot.ArcadeDrive(stick);  drive with arcade style (use right stick)
 //		shooter.SetInverted(true);
 
 //		if(stick.GetRawButton(1) && !shooter_stop.Get()){
@@ -96,11 +95,16 @@ private:
 //			shooter.Set(0);
 //		}
 
+		//This is that part where we summon an alien mothership to control our robot for us
+		myRobot.TankDrive(lstick_y(),rstick_y());
+
+		//Shooter pulls in when x button pressed and limit switch not triggered
 		if(!shooter_stop.Get()){
 			if(x_btn()){
 				shooter.Set(-0.5);
 			}
 		}
+		//Shooter shoots if limit switch pressed for as long as y pressed
 		else {
 			if(y_btn()){
 				shooter.Set(1.0);
@@ -129,3 +133,5 @@ private:
 };
 
 START_ROBOT_CLASS(Robot)
+
+
