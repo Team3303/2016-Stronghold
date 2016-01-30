@@ -10,6 +10,10 @@ class Robot: public IterativeRobot
 	Joystick stick; // only joystick
 	LiveWindow *lw;
 	int autoLoopCounter;
+	DoubleSolenoid solenoid1;
+	DoubleSolenoid solenoid2;
+	DoubleSolenoid solenoid3;
+	Compressor *c = new Compressor(0);
 
 	// FIX ME: Pointers for the following variables are not working
 	bool x_btn() { return stick.GetRawButton(1); }
@@ -24,8 +28,8 @@ class Robot: public IterativeRobot
 	bool start_btn() { return stick.GetRawButton(10); }
 	float lstick_x() { return stick.GetRawAxis(0); }
 	float lstick_y() { return stick.GetRawAxis(1); }
-	float rstick_x() { return stick.GetRawAxis(3); }
-	float rstick_y() { return stick.GetRawAxis(4); }
+	float rstick_x() { return stick.GetRawAxis(2); }
+	float rstick_y() { return stick.GetRawAxis(3); }
 
 
 public:
@@ -35,7 +39,10 @@ public:
 		shooter_stop(0),
 		stick(0),		// as they are declared above.
 		lw(LiveWindow::GetInstance()),
-		autoLoopCounter(0)
+		autoLoopCounter(0),
+		solenoid1(2, 3),
+		solenoid2(7, 6),
+		solenoid3(0, 1)  //forward turns on first port
 	{
 		myRobot.SetExpiration(0.1);
 	}
@@ -82,6 +89,9 @@ private:
 
 	void TeleopPeriodic()
 	{
+
+		c->SetClosedLoopControl(true);
+
 		//myRobot.ArcadeDrive(stick);  drive with arcade style (use right stick)
 //		shooter.SetInverted(true);
 
@@ -123,6 +133,27 @@ private:
 
 		}
 
+		/*if (rstick_y()) {
+			shooter.Set(1.0);
+		}*/
+
+		if(b_btn()){
+			// pistons in
+			solenoid1.Set(DoubleSolenoid::Value::kForward);
+		}else if(a_btn()){
+			// pistons out
+			solenoid1.Set(DoubleSolenoid::Value::kReverse);
+		}
+
+		if(rb()){
+			// switch to 60 psi
+			solenoid2.Set(DoubleSolenoid::Value::kForward);
+			solenoid3.Set(DoubleSolenoid::Value::kReverse);
+		}else if(lb()){
+			// switch to 30 psi (or other)
+			solenoid2.Set(DoubleSolenoid::Value::kReverse);
+			solenoid3.Set(DoubleSolenoid::Value::kForward);
+		}
 
 	}
 
