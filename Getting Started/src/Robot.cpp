@@ -14,6 +14,7 @@ class Robot: public IterativeRobot
 	DoubleSolenoid solenoid2;
 	DoubleSolenoid solenoid3;
 	Compressor *c = new Compressor(0);
+	Timer time_since;
 
 	// FIX ME: Pointers for the following variables are not working
 	bool x_btn() { return stick.GetRawButton(1); }
@@ -31,6 +32,33 @@ class Robot: public IterativeRobot
 	float rstick_x() { return stick.GetRawAxis(2); }
 	float rstick_y() { return stick.GetRawAxis(3); }
 
+	void startRaise(){
+		// pistons out
+		solenoid1.Set(DoubleSolenoid::Value::kReverse);
+		time_since.Reset();
+		time_since.Start();
+	}
+
+	void checkRaise(double seconds){
+		if(time_since.HasPeriodPassed(seconds)){
+			// switch to 30 psi (or other)
+			solenoid2.Set(DoubleSolenoid::Value::kReverse);
+			solenoid3.Set(DoubleSolenoid::Value::kForward);
+			// reset time_since
+			time_since.Stop();
+			time_since.Reset();
+		}
+	}
+
+	void lower(){
+		// pistons out
+		solenoid1.Set(DoubleSolenoid::Value::kForward);
+		// switch to 60 psi
+		solenoid2.Set(DoubleSolenoid::Value::kForward);
+		solenoid3.Set(DoubleSolenoid::Value::kReverse);
+		time_since.Stop();
+		time_since.Reset();
+	}
 
 public:
 	Robot() :
@@ -89,7 +117,6 @@ private:
 
 	void TeleopPeriodic()
 	{
-
 		c->SetClosedLoopControl(true);
 
 		//myRobot.ArcadeDrive(stick);  drive with arcade style (use right stick)
@@ -104,6 +131,24 @@ private:
 //		else {
 //			shooter.Set(0);
 //		}
+
+		std::stringstream ss1;
+		std::stringstream ss2;
+		std::stringstream ss3;
+		std::string clock_string;
+		std::string seconds_string;
+		std::string timer_string;
+		ss1<<clock();
+		ss1>>clock_string;
+		//ss.str(std::string());
+		ss2<<(clock() / CLOCKS_PER_SEC);
+		ss2>>seconds_string;
+		//ss.str(std::string());
+		ss3<<time_since.Get();
+		ss3>>timer_string;
+		SmartDashboard::PutString("DB/String 0", clock_string);
+		SmartDashboard::PutString("DB/String 1", seconds_string);
+		SmartDashboard::PutString("DB/String 2", timer_string);
 
 		//This is that part where we summon an alien mothership to control our robot for us
 		myRobot.TankDrive(lstick_y(),rstick_y());
@@ -138,14 +183,22 @@ private:
 		}*/
 
 		if(b_btn()){
+
+			startRaise();
+
 			// pistons in
-			solenoid1.Set(DoubleSolenoid::Value::kForward);
+			//solenoid1.Set(DoubleSolenoid::Value::kForward);
 		}else if(a_btn()){
+
+			lower();
+
 			// pistons out
-			solenoid1.Set(DoubleSolenoid::Value::kReverse);
+			//solenoid1.Set(DoubleSolenoid::Value::kReverse);
 		}
 
-		if(rb()){
+		checkRaise(2);
+
+		/*if(rb()){
 			// switch to 60 psi
 			solenoid2.Set(DoubleSolenoid::Value::kForward);
 			solenoid3.Set(DoubleSolenoid::Value::kReverse);
@@ -153,7 +206,7 @@ private:
 			// switch to 30 psi (or other)
 			solenoid2.Set(DoubleSolenoid::Value::kReverse);
 			solenoid3.Set(DoubleSolenoid::Value::kForward);
-		}
+		} */
 
 	}
 
