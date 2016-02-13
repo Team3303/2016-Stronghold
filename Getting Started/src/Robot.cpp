@@ -68,6 +68,11 @@ public:
 	}
 
 private:
+	void RobotInit() {
+		CameraServer::GetInstance()->SetQuality(50);
+		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+	}
+
 	void AutonomousInit()
 	{
 		autoLoopCounter = 0;
@@ -130,7 +135,6 @@ private:
 
 	void TeleopInit()
 	{
-		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 	}
 
 	void TeleopPeriodic()
