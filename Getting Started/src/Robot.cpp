@@ -36,7 +36,7 @@ class Robot: public IterativeRobot
 		// pistons out
 		solenoid1.Set(DoubleSolenoid::Value::kReverse);
 		time_since.Reset();
-		time_since.Start();
+//		time_since.Start();
 	}
 
 	void checkRaise(double seconds){
@@ -235,7 +235,7 @@ private:
 			//solenoid1.Set(DoubleSolenoid::Value::kReverse);
 		}
 
-		checkRaise(2);
+//		checkRaise(2);
 
 		/*if(rb()){
 			// switch to 60 psi
