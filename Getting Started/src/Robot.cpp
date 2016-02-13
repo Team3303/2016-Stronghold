@@ -14,7 +14,6 @@ class Robot: public IterativeRobot
 	DoubleSolenoid solenoid2;
 	DoubleSolenoid solenoid3;
 	Compressor *c = new Compressor(0);
-	//CameraServer camera;
 	Timer time_since, auto_time, shoot_time;
 	// FIX ME: Pointers for the following variables are not working
 	bool x_btn() { return stick.GetRawButton(1); }
@@ -32,32 +31,14 @@ class Robot: public IterativeRobot
 	float rstick_x() { return stick.GetRawAxis(2); }
 	float rstick_y() { return 0.9*stick.GetRawAxis(3); }
 
-	void startRaise(){
+	void raise(){
 		// pistons out
 		solenoid1.Set(DoubleSolenoid::Value::kReverse);
-		time_since.Reset();
-//		time_since.Start();
-	}
-
-	void checkRaise(double seconds){
-		if(time_since.HasPeriodPassed(seconds)){
-			// switch to 30 psi (or other)
-			solenoid2.Set(DoubleSolenoid::Value::kReverse);
-			solenoid3.Set(DoubleSolenoid::Value::kForward);
-			// reset time_since
-			time_since.Stop();
-			time_since.Reset();
-		}
 	}
 
 	void lower(){
 		// pistons out
 		solenoid1.Set(DoubleSolenoid::Value::kForward);
-		// switch to 60 psi
-		solenoid2.Set(DoubleSolenoid::Value::kForward);
-		solenoid3.Set(DoubleSolenoid::Value::kReverse);
-		time_since.Stop();
-		time_since.Reset();
 	}
 
 	/*void drive(float seconds,float speed,float turn){
@@ -82,7 +63,6 @@ public:
 		solenoid1(2, 3),
 		solenoid2(7, 6),
 		solenoid3(0, 1)  //forward turns on first port
-        //camera(0)
 	{
 		myRobot.SetExpiration(0.1);
 	}
@@ -106,13 +86,13 @@ private:
 	    if(!auto_time.HasPeriodPassed(0.1)){
 			myRobot.Drive(-0.05, 1.0);              //drive forward
 
-		}else if(!auto_time.HasPeriodPassed(.2)){
+		}else if(!auto_time.HasPeriodPassed(0.2)){
 			myRobot.TankDrive(1.0, -1.0);         //turn right
 
-		}else if(!auto_time.HasPeriodPassed(.3)){
+		}else if(!auto_time.HasPeriodPassed(0.3)){
 			myRobot.Drive(-0.5, 0.0);              //drive forward
 
-		}else if(!auto_time.HasPeriodPassed(.4)){
+		}else if(!auto_time.HasPeriodPassed(0.4)){
 			myRobot.Drive(0.0, 0.0);              //stop and shoot
 			shooter.Set(1.0);
 
@@ -150,12 +130,11 @@ private:
 
 	void TeleopInit()
 	{
-
+		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 	}
 
 	void TeleopPeriodic()
 	{
-		//camera.StartAutomaticCapture();
 		c->SetClosedLoopControl(true);
 
 		//myRobot.ArcadeDrive(stick);  drive with arcade style (use right stick)
@@ -170,24 +149,6 @@ private:
 //		else {
 //			shooter.Set(0);
 //		}
-
-		std::stringstream ss1;
-		std::stringstream ss2;
-		std::stringstream ss3;
-		std::string clock_string;
-		std::string seconds_string;
-		std::string timer_string;
-		ss1<<clock();
-		ss1>>clock_string;
-		//ss.str(std::string());
-		ss2<<(clock() / CLOCKS_PER_SEC);
-		ss2>>seconds_string;
-		//ss.str(std::string());
-		ss3<<time_since.Get();
-		ss3>>timer_string;
-		SmartDashboard::PutString("DB/String 0", clock_string);
-		SmartDashboard::PutString("DB/String 1", seconds_string);
-		SmartDashboard::PutString("DB/String 2", timer_string);
 
 		//This is that part where we summon an alien mothership to control our robot for us
 		myRobot.TankDrive(lstick_y(),rstick_y());
@@ -217,13 +178,9 @@ private:
 
 		}
 
-		/*if (rstick_y()) {
-			shooter.Set(1.0);
-		}*/
-
 		if(b_btn()){
 
-			startRaise();
+			raise();
 
 			// pistons in
 			//solenoid1.Set(DoubleSolenoid::Value::kForward);
