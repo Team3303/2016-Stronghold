@@ -24,10 +24,10 @@ class Robot: public IterativeRobot
 	bool rt() { return gamepad.GetRawButton(8); }
 	bool back_btn() { return gamepad.GetRawButton(9); }
 	bool start_btn() { return gamepad.GetRawButton(10); }
-	float lstick_x() { return stick1.GetRawAxis(0); }
-	float lstick_y() { return stick1.GetRawAxis(1); }
-	float rstick_x() { return stick2.GetRawAxis(0); }
-	float rstick_y() { return stick2.GetRawAxis(1); }
+	float lstick_x() { return gamepad.GetRawAxis(0); }
+	float lstick_y() { return gamepad.GetRawAxis(1); }
+	float rstick_x() { return gamepad.GetRawAxis(2); }
+	float rstick_y() { return gamepad.GetRawAxis(3); }
 
 	void raise(){
 		// pistons out
@@ -114,7 +114,7 @@ private:
 	void TeleopPeriodic()
 	{
 		//This is that part where we summon an alien mothership to control our robot for us
-		myRobot.TankDrive(lstick_y(),rstick_y());
+		myRobot.ArcadeDrive(rstick_y(),rstick_x());
 
 		//Shooter pulls in when x button pressed and limit switch not triggered
 		if(shooter_stop.Get()){
