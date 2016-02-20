@@ -10,10 +10,10 @@ class Robot: public IterativeRobot
 	Joystick stick1, stick2, gamepad; // only joystick
 	LiveWindow *lw;
 	int autoLoopCounter;
+	int SPEED_MODIFIER = 0.75;
 	DoubleSolenoid solenoid1;
 	Compressor *c = new Compressor(0);
 	Timer time_since, auto_time, shoot_time;
-	// FIX ME: Pointers for the following variables are not working
 	bool x_btn() { return gamepad.GetRawButton(1); }
 	bool a_btn() { return gamepad.GetRawButton(2); }
 	bool b_btn() { return gamepad.GetRawButton(3); }
@@ -24,10 +24,10 @@ class Robot: public IterativeRobot
 	bool rt() { return gamepad.GetRawButton(8); }
 	bool back_btn() { return gamepad.GetRawButton(9); }
 	bool start_btn() { return gamepad.GetRawButton(10); }
-	float lstick_x() { return gamepad.GetRawAxis(0); }
-	float lstick_y() { return gamepad.GetRawAxis(1); }
-	float rstick_x() { return gamepad.GetRawAxis(2); }
-	float rstick_y() { return gamepad.GetRawAxis(3); }
+	float lstick_x() { return SPEED_MODIFIER*stick1.GetRawAxis(0); }
+	float lstick_y() { return SPEED_MODIFIER*stick1.GetRawAxis(1); }
+	float rstick_x() { return SPEED_MODIFIER*stick2.GetRawAxis(0); }
+	float rstick_y() { return SPEED_MODIFIER*stick2.GetRawAxis(1); }
 
 	void raise(){
 		// pistons out
