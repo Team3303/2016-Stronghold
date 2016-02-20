@@ -114,7 +114,7 @@ private:
 	void TeleopPeriodic()
 	{
 		//This is that part where we summon an alien mothership to control our robot for us
-		myRobot.ArcadeDrive(rstick_y(),rstick_x());
+		myRobot.TankDrive(lstick_y(),rstick_y());
 
 		//Shooter pulls in when x button pressed and limit switch not triggered
 		if(shooter_stop.Get()){
