@@ -28,6 +28,11 @@ class Robot: public IterativeRobot
 	float lstick_y() { return SPEED_MODIFIER*stick1.GetRawAxis(1); }
 	float rstick_x() { return SPEED_MODIFIER*stick2.GetRawAxis(0); }
 	float rstick_y() { return SPEED_MODIFIER*stick2.GetRawAxis(1); }
+	AnalogGyro gyro;
+	//gyro calibration constant, may need to be adjusted
+	//gyro value of 360 is set to correspond to one full revolution
+	const double voltsPerDegreePerSecond = .0128;
+
 
 	void raise(){
 		// pistons out
@@ -69,6 +74,8 @@ private:
 	void RobotInit() {
 		CameraServer::GetInstance()->SetQuality(50);
 		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+		c->SetClosedLoopControl(true);
+		gyro.SetSensitivity(voltsPerDegreePerSecond);
 	}
 
 	void AutonomousInit()
@@ -126,6 +133,13 @@ private:
 
 	void TeleopPeriodic()
 	{
+		// Print the value of the gyro to Driver Station
+		std::stringstream stream;
+		std::string gyro_value;
+		stream << gyro.GetAngle();
+		stream >> gyro_value;
+		SmartDashboard::PutString("DB/String 0", gyro_value);
+
 		//This is that part where we summon an alien mothership to control our robot for us
 //		myRobot.ArcadeDrive(rstick_y(),rstick_x());
 		myRobot.TankDrive(lstick_y(),rstick_y());
