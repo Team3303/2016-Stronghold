@@ -28,10 +28,11 @@ class Robot: public IterativeRobot
 	float lstick_y() { return SPEED_MODIFIER*stick1.GetRawAxis(1); }
 	float rstick_x() { return SPEED_MODIFIER*stick2.GetRawAxis(0); }
 	float rstick_y() { return SPEED_MODIFIER*stick2.GetRawAxis(1); }
+
 	AnalogGyro gyro;
 	//gyro calibration constant, may need to be adjusted
 	//gyro value of 360 is set to correspond to one full revolution
-	const double voltsPerDegreePerSecond = .0128;
+	const double voltsPerDegreePerSecond = 0.0128;
 
 
 	void raise(){
@@ -65,7 +66,8 @@ public:
 		gamepad(2),// as they are declared above.
 		lw(LiveWindow::GetInstance()),
 		autoLoopCounter(0),
-		solenoid1(2, 3)
+		solenoid1(2, 3),
+		gyro(0)
 	{
 		myRobot.SetExpiration(0.1);
 	}
