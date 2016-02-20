@@ -75,6 +75,13 @@ private:
 	{
 		autoLoopCounter = 0;
 		c->SetClosedLoopControl(true);
+		auto_time.Stop();                     //stop and reset timer
+	    auto_time.Reset();
+
+		/*myRobot.SetInvertedMotor(myRobot.kFrontLeftMotor, true);
+		myRobot.SetInvertedMotor(myRobot.kFrontRightMotor, true);
+		myRobot.SetInvertedMotor(myRobot.kRearLeftMotor, true);
+		myRobot.SetInvertedMotor(myRobot.kRearRightMotor, true);*/
 	}
 
 	void AutonomousPeriodic()
@@ -87,16 +94,16 @@ private:
 	    SmartDashboard::PutString("DB/String 0", auto_timer_string);
 		auto_time.Start();  //start autonomous timer
 
-	    if(!auto_time.HasPeriodPassed(0.1)){
-			myRobot.Drive(-0.05, 1.0);              //drive forward
-
-		}else if(!auto_time.HasPeriodPassed(0.2)){
-			myRobot.TankDrive(1.0, -1.0);         //turn right
-
-		}else if(!auto_time.HasPeriodPassed(0.3)){
+	    if(auto_time.Get() <= 1.0){
 			myRobot.Drive(-0.5, 0.0);              //drive forward
 
-		}else if(!auto_time.HasPeriodPassed(0.4)){
+		}else if(auto_time.Get() <= 1.5){
+			myRobot.TankDrive(-1.0, 1.0);         //turn right
+
+		}else if(auto_time.Get() <= 2.5){
+			myRobot.Drive(-0.5, 0.0);              //drive forward
+
+		}else if(auto_time.Get() <= 3.5){
 			myRobot.Drive(0.0, 0.0);              //stop and shoot
 			shooter.Set(1.0);
 
@@ -104,16 +111,23 @@ private:
 			myRobot.Drive(0.0, 0.0);
 			shooter.Set(0.0);                     //stop all motors
 		}
+
 	}
 
 	void TeleopInit()
 	{
 		c->SetClosedLoopControl(true);
+
+		/*myRobot.SetInvertedMotor(myRobot.kFrontLeftMotor, true);
+		myRobot.SetInvertedMotor(myRobot.kFrontRightMotor, true);*/
+		/*myRobot.SetInvertedMotor(myRobot.kRearLeftMotor, true);
+		myRobot.SetInvertedMotor(myRobot.kRearRightMotor, true);*/
 	}
 
 	void TeleopPeriodic()
 	{
 		//This is that part where we summon an alien mothership to control our robot for us
+//		myRobot.ArcadeDrive(rstick_y(),rstick_x());
 		myRobot.TankDrive(lstick_y(),rstick_y());
 
 		//Shooter pulls in when x button pressed and limit switch not triggered
