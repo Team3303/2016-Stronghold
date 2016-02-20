@@ -10,7 +10,7 @@ class Robot: public IterativeRobot
 	Joystick stick1, stick2, gamepad; // only joystick
 	LiveWindow *lw;
 	int autoLoopCounter;
-	int SPEED_MODIFIER = 0.75;
+	float SPEED_MODIFIER = 0.75;
 	DoubleSolenoid solenoid1;
 	Compressor *c = new Compressor(0);
 	Timer time_since, auto_time, shoot_time;
