@@ -32,7 +32,8 @@ class Robot: public IterativeRobot
 	AnalogGyro gyro;
 	//gyro calibration constant, may need to be adjusted
 	//gyro value of 360 is set to correspond to one full revolution
-	const double voltsPerDegreePerSecond = 0.0128;
+	const float voltsDeadband = 0;
+	const double voltsPerDegreePerSecond = 0.007;
 
 
 	void raise(){
@@ -66,7 +67,7 @@ public:
 		gamepad(2),// as they are declared above.
 		lw(LiveWindow::GetInstance()),
 		autoLoopCounter(0),
-		solenoid1(2, 3),
+		solenoid1(0, 1),
 		gyro(0)
 	{
 		myRobot.SetExpiration(0.1);
@@ -76,8 +77,6 @@ private:
 	void RobotInit() {
 		CameraServer::GetInstance()->SetQuality(50);
 		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
-		c->SetClosedLoopControl(true);
-		gyro.SetSensitivity(voltsPerDegreePerSecond);
 	}
 
 	void AutonomousInit()
@@ -127,6 +126,11 @@ private:
 	{
 		c->SetClosedLoopControl(true);
 
+		gyro.InitGyro();
+		gyro.Reset();
+		gyro.SetSensitivity(voltsPerDegreePerSecond);
+//		gyro.SetDeadband(voltsDeadband);
+
 		/*myRobot.SetInvertedMotor(myRobot.kFrontLeftMotor, true);
 		myRobot.SetInvertedMotor(myRobot.kFrontRightMotor, true);*/
 		/*myRobot.SetInvertedMotor(myRobot.kRearLeftMotor, true);
@@ -136,11 +140,30 @@ private:
 	void TeleopPeriodic()
 	{
 		// Print the value of the gyro to Driver Station
-		std::stringstream stream;
+		std::stringstream stream1;
+		std::stringstream stream2;
+		std::stringstream stream3;
+		std::stringstream stream4;
 		std::string gyro_value;
-		stream << gyro.GetAngle();
-		stream >> gyro_value;
+		std::string gyro_rate;
+		std::string gyro_center;
+		std::string gyro_offset;
+		stream1 << gyro.GetAngle();
+		stream1 >> gyro_value;
+		stream2 << gyro.GetRate();
+		stream2 >> gyro_rate;
+		stream3 << gyro.GetCenter();
+		stream3 >> gyro_center;
+		stream4 << gyro.GetOffset();
+		stream4 >> gyro_offset;
 		SmartDashboard::PutString("DB/String 0", gyro_value);
+		SmartDashboard::PutString("DB/String 1", gyro_rate);
+		SmartDashboard::PutString("DB/String 2", gyro_center);
+		SmartDashboard::PutString("DB/String 3", gyro_offset);
+
+		if(rb()){
+			gyro.Reset();
+		}
 
 		//This is that part where we summon an alien mothership to control our robot for us
 //		myRobot.ArcadeDrive(rstick_y(),rstick_x());
