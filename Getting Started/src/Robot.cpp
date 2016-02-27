@@ -57,6 +57,23 @@ class Robot: public IterativeRobot
 		}
 	}*/
 
+	void align(float angle){
+		if(gyro.GetAngle() > (angle + 5.0)){
+
+			myRobot.TankDrive(1.0, -1.0);   //turn left
+
+		}else if(gyro.GetAngle() < (angle - 5.0)){
+
+			myRobot.TankDrive(-1.0 , 1.0);   //turn right
+
+		}else{
+
+			myRobot.TankDrive(0.0, 0.0);
+
+		}
+	}
+
+
 public:
 	Robot() :
 		myRobot(0, 1),	// these must be initialized in the same order
@@ -109,8 +126,9 @@ private:
 	    if(auto_time.Get() <= 1.0){
 			myRobot.Drive(-0.5, 0.0);              //drive forward
 
-		}else if(auto_time.Get() <= 1.5){
-			myRobot.TankDrive(-1.0, 1.0);         //turn right
+		}else if(gyro.GetAngle() <= (45 + 1) && gyro.GetAngle() >= (45 - 1)){
+
+			align(45);
 
 		}else if(auto_time.Get() <= 2.5){
 			myRobot.Drive(-0.5, 0.0);              //drive forward
