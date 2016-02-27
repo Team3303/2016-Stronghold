@@ -32,7 +32,7 @@ class Robot: public IterativeRobot
 	AnalogGyro gyro;
 	//gyro calibration constant, may need to be adjusted
 	//gyro value of 360 is set to correspond to one full revolution
-	const float voltsDeadband = 0;
+	const float voltsDeadband = 0.008;
 	const double voltsPerDegreePerSecond = 0.007;
 
 
@@ -133,7 +133,7 @@ private:
 		gyro.InitGyro();
 		gyro.Reset();
 		gyro.SetSensitivity(voltsPerDegreePerSecond);
-//		gyro.SetDeadband(voltsDeadband);
+		gyro.SetDeadband(voltsDeadband);
 
 		/*myRobot.SetInvertedMotor(myRobot.kFrontLeftMotor, true);
 		myRobot.SetInvertedMotor(myRobot.kFrontRightMotor, true);*/
