@@ -10,7 +10,7 @@ class Robot: public IterativeRobot
 	Joystick stick1, stick2, gamepad; // only joystick
 	LiveWindow *lw;
 	int autoLoopCounter;
-	float SPEED_MODIFIER = 0.75;
+	float SPEED_MODIFIER = 1.0;
 	DoubleSolenoid solenoid1;
 	Compressor *c = new Compressor(0);
 	Timer time_since, auto_time, shoot_time;
@@ -24,10 +24,10 @@ class Robot: public IterativeRobot
 	bool rt() { return gamepad.GetRawButton(8); }
 	bool back_btn() { return gamepad.GetRawButton(9); }
 	bool start_btn() { return gamepad.GetRawButton(10); }
-	float lstick_x() { return SPEED_MODIFIER*stick1.GetRawAxis(0); }
-	float lstick_y() { return SPEED_MODIFIER*stick1.GetRawAxis(1); }
-	float rstick_x() { return SPEED_MODIFIER*stick2.GetRawAxis(0); }
-	float rstick_y() { return SPEED_MODIFIER*stick2.GetRawAxis(1); }
+	float lstick_x() { return stick1.GetRawAxis(0); }
+	float lstick_y() { return stick1.GetRawAxis(1); }
+	float rstick_x() { return stick2.GetRawAxis(0); }
+	float rstick_y() { return stick2.GetRawAxis(1); }
 
 	AnalogGyro gyro;
 	//gyro calibration constant, may need to be adjusted
@@ -77,7 +77,7 @@ private:
 		CameraServer::GetInstance()->SetQuality(50);
 		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 		c->SetClosedLoopControl(true);
-		gyro.SetSensitivity(voltsPerDegreePerSecond);
+		gyro.InitGyro();
 	}
 
 	void AutonomousInit()
@@ -86,6 +86,8 @@ private:
 		c->SetClosedLoopControl(true);
 		auto_time.Stop();                     //stop and reset timer
 	    auto_time.Reset();
+	    gyro.Reset();
+		gyro.SetSensitivity(voltsPerDegreePerSecond);
 
 		/*myRobot.SetInvertedMotor(myRobot.kFrontLeftMotor, true);
 		myRobot.SetInvertedMotor(myRobot.kFrontRightMotor, true);
@@ -126,6 +128,9 @@ private:
 	void TeleopInit()
 	{
 		c->SetClosedLoopControl(true);
+
+	    gyro.Reset();
+		gyro.SetSensitivity(voltsPerDegreePerSecond);
 
 		/*myRobot.SetInvertedMotor(myRobot.kFrontLeftMotor, true);
 		myRobot.SetInvertedMotor(myRobot.kFrontRightMotor, true);*/
