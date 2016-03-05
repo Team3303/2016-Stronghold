@@ -57,15 +57,17 @@ class Robot: public IterativeRobot
 		}
 	}*/
 
+	double alignSpeed = 0.9;
+
 	void align(float angle){
 
 		if(gyro.GetAngle() > (angle + 1.0)){
 
-			myRobot.TankDrive(0.9, -0.9);   //turn left
+			myRobot.TankDrive(alignSpeed, -1 * alignSpeed);   //turn left
 
 		}else if(gyro.GetAngle() < (angle - 1.0)){
 
-			myRobot.TankDrive(-0.9 , 0.9);   //turn right
+			myRobot.TankDrive(-1 * alignSpeed, alignSpeed);   //turn right
 
 		}else{
 
@@ -94,8 +96,8 @@ public:
 
 private:
 	void RobotInit() {
-		CameraServer::GetInstance()->SetQuality(50);
-		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+//		CameraServer::GetInstance()->SetQuality(50);
+//		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 		c->SetClosedLoopControl(true);
 		gyro.InitGyro();
 	}
@@ -106,6 +108,7 @@ private:
 		c->SetClosedLoopControl(true);
 		auto_time.Stop();                     //stop and reset timer
 	    auto_time.Reset();
+	    auto_time.Start();                    //start autonomous timer
 	    gyro.Reset();
 		gyro.SetSensitivity(voltsPerDegreePerSecond);
 
@@ -133,19 +136,23 @@ private:
 		ss5<<auto_time.Get();
 	    ss5>>auto_timer_string;
 	    SmartDashboard::PutString("DB/String 2", auto_timer_string);
-		auto_time.Start();  //start autonomous timer
 
-	    if(auto_time.Get() <= 3.2){
+		double period1 = SmartDashboard::GetNumber("DB/Slider 0", 2.75);
+		double period2 = SmartDashboard::GetNumber("DB/Slider 1", 2.3);
+		double period3 = SmartDashboard::GetNumber("DB/Slider 2", 1.25);
+		alignSpeed = SmartDashboard::GetNumber("DB/Slider 3", 0.65);
+
+	    if(auto_time.Get() <= period1){
 			myRobot.Drive(-0.5, 0.0);              //drive forward
 
-		}else if(auto_time.Get() <= 5.70){
+		}else if(auto_time.Get() <= period1 + period2){
 
 			align(60);
 
-		}else if(auto_time.Get() <= 6.95){
+		}else if(auto_time.Get() <= period1 + period2 + period3){
 			myRobot.Drive(-0.5, 0.0);              //drive forward
 
-		}else if(auto_time.Get() <= 7.95){
+		}else if(auto_time.Get() <= period1 + period2 + period3 + 1){
 			myRobot.Drive(0.0, 0.0);              //stop and shoot
 			shooter.Set(1.0);
 
