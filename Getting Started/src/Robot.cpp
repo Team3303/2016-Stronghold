@@ -59,9 +59,9 @@ class Robot: public IterativeRobot
 
 	void align(float angle){
 
-		if(gyro.GetAngle() > (angle + 1.0)){
+		if(gyro.GetAngle() > (angle + 1.0) || gyro.GetAngle() < (angle - 1.0)){
 
-			myRobot.TankDrive(0.9, -0.9);   //turn left
+			myRobot.TankDrive((gyro.GetAngle() - 45.0)/180, -(gyro.GetAngle() - 45.0)/180);   //turn left
 
 		}else if(gyro.GetAngle() < (angle - 1.0)){
 
