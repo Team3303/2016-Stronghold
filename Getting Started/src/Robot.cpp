@@ -58,13 +58,14 @@ class Robot: public IterativeRobot
 	}*/
 
 	void align(float angle){
-		if(gyro.GetAngle() > (angle + 5.0)){
 
-			myRobot.TankDrive(1.0, -1.0);   //turn left
+		if(gyro.GetAngle() > (angle + 1.0)){
 
-		}else if(gyro.GetAngle() < (angle - 5.0)){
+			myRobot.TankDrive(0.9, -0.9);   //turn left
 
-			myRobot.TankDrive(-1.0 , 1.0);   //turn right
+		}else if(gyro.GetAngle() < (angle - 1.0)){
+
+			myRobot.TankDrive(-0.9 , 0.9);   //turn right
 
 		}else{
 
@@ -86,7 +87,7 @@ public:
 		lw(LiveWindow::GetInstance()),
 		autoLoopCounter(0),
 		solenoid1(0, 1),
-		gyro(0)
+		gyro(1)
 	{
 		myRobot.SetExpiration(0.1);
 	}
@@ -116,25 +117,35 @@ private:
 
 	void AutonomousPeriodic()
 	{
+		std::stringstream stream1;
+		std::stringstream stream2;
+		std::string gyro_value;
+		std::string gyro_rate;
+		stream1 << gyro.GetAngle();
+		stream1 >> gyro_value;
+		stream2 << gyro.GetRate();
+		stream2 >> gyro_rate;
+		SmartDashboard::PutString("DB/String 0", gyro_value);
+		SmartDashboard::PutString("DB/String 1", gyro_rate);
 
 		std::stringstream ss5;
 		std::string auto_timer_string;
 		ss5<<auto_time.Get();
 	    ss5>>auto_timer_string;
-	    SmartDashboard::PutString("DB/String 0", auto_timer_string);
+	    SmartDashboard::PutString("DB/String 2", auto_timer_string);
 		auto_time.Start();  //start autonomous timer
 
-	    if(auto_time.Get() <= 1.0){
+	    if(auto_time.Get() <= 3.2){
 			myRobot.Drive(-0.5, 0.0);              //drive forward
 
-		}else if(gyro.GetAngle() <= (45 + 1) && gyro.GetAngle() >= (45 - 1)){
+		}else if(auto_time.Get() <= 5.70){
 
-			align(45);
+			align(60);
 
-		}else if(auto_time.Get() <= 2.5){
+		}else if(auto_time.Get() <= 6.95){
 			myRobot.Drive(-0.5, 0.0);              //drive forward
 
-		}else if(auto_time.Get() <= 3.5){
+		}else if(auto_time.Get() <= 7.95){
 			myRobot.Drive(0.0, 0.0);              //stop and shoot
 			shooter.Set(1.0);
 
@@ -188,7 +199,7 @@ private:
 			gyro.Reset();
 		}
 
-		//This is that part where we summon an alien mothership to control our robot for us
+		//This is that part where we summon an alien mother ship to control our robot for us
 //		myRobot.ArcadeDrive(rstick_y(),rstick_x());
 		myRobot.TankDrive(lstick_y(),rstick_y());
 
@@ -199,13 +210,14 @@ private:
 			}
 		}
 		//Shooter shoots if limit switch pressed for as long as y pressed
-		else {
-			if(y_btn()){
-				shooter.Set(1.0);
-			} else {
-				shooter.Set(0.0);
-			}
+		else{
+			shooter.Set(0.0);
 		}
+
+		if(y_btn()){
+			shooter.Set(1.0);
+		}
+
 
 		if(lt() && rt()) {
 			if (start_btn()) {
