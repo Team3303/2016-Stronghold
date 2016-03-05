@@ -61,9 +61,10 @@ class Robot: public IterativeRobot
 
 	void align(float angle){
 
-		if(gyro.GetAngle() > (angle + 1.0)){
+		if(gyro.GetAngle() > (angle + 1.0) || gyro.GetAngle() < (angle - 1.0)){
 
 			myRobot.TankDrive(alignSpeed, -1 * alignSpeed);   //turn left
+			// myRobot.TankDrive((gyro.GetAngle() - 45.0)/180, -(gyro.GetAngle() - 45.0)/180);   //turn left
 
 		}else if(gyro.GetAngle() < (angle - 1.0)){
 
@@ -80,8 +81,7 @@ class Robot: public IterativeRobot
 public:
 	Robot() :
 		myRobot(0, 1),	// these must be initialized in the same order
-		shooter(2
-				),
+		shooter(2),
 		shooter_stop(0),
 		stick1(0),
 		stick2(1),
