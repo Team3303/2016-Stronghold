@@ -77,7 +77,8 @@ class Robot: public IterativeRobot
 public:
 	Robot() :
 		myRobot(0, 1),	// these must be initialized in the same order
-		shooter(3),
+		shooter(2
+				),
 		shooter_stop(0),
 		stick1(0),
 		stick2(1),
@@ -92,8 +93,8 @@ public:
 
 private:
 	void RobotInit() {
-		CameraServer::GetInstance()->SetQuality(50);
-		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+//		CameraServer::GetInstance()->SetQuality(50);
+//		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 		c->SetClosedLoopControl(true);
 		gyro.InitGyro();
 	}
