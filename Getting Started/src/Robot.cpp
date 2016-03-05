@@ -143,7 +143,7 @@ private:
 		alignSpeed = SmartDashboard::GetNumber("DB/Slider 3", 0.65);
 
 	    if(auto_time.Get() <= period1){
-			myRobot.Drive(-0.5, 0.0);              //drive forward
+			myRobot.Drive(-0.75, 0.0);              //drive forward
 
 		}else if(auto_time.Get() <= period1 + period2){
 
@@ -152,7 +152,7 @@ private:
 		}else if(auto_time.Get() <= period1 + period2 + period3){
 			myRobot.Drive(-0.5, 0.0);              //drive forward
 
-		}else if(auto_time.Get() <= period1 + period2 + period3 + 1){
+		}else if(SmartDashboard::GetBoolean("New Name", false) && (auto_time.Get() <= period1 + period2 + period3 + 1)){
 			myRobot.Drive(0.0, 0.0);              //stop and shoot
 			shooter.Set(1.0);
 
