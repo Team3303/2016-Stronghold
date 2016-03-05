@@ -93,8 +93,8 @@ public:
 
 private:
 	void RobotInit() {
-//		CameraServer::GetInstance()->SetQuality(50);
-//		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+		CameraServer::GetInstance()->SetQuality(50);
+		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 		c->SetClosedLoopControl(true);
 		gyro.InitGyro();
 	}
