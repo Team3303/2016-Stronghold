@@ -29,6 +29,21 @@ class Robot: public IterativeRobot
 	bool rt() { return gamepad.GetRawButton(8); }
 	bool back_btn() { return gamepad.GetRawButton(9); }
 	bool start_btn() { return gamepad.GetRawButton(10); }
+	bool d_pad_up() {
+		if ( (gamepad.GetPOV(2) >= 0 && gamepad.GetPOV(2) <= 45 )
+				|| gamepad.GetPOV(2) == 315 ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	bool d_pad_down(){
+		if ( gamepad.GetPOV(2) >= 135 && gamepad.GetPOV(2) <= 215 ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	float lstick_x() { return stick1.GetRawAxis(0); }
 	float lstick_y() { return stick1.GetRawAxis(1); }
 	float rstick_x() { return stick2.GetRawAxis(0); }
@@ -260,17 +275,18 @@ private:
 			else if (y_btn()) {
 				shooter.Set(1.0);
 			}
-
 		}
 
 		if(b_btn()){
-
 			raise();
-
 		} else if(a_btn()){
-
 			lower();
+		}
 
+		if(d_pad_up() && !armIsRaised()) {
+			// raise arm motor
+		} else if(d_pad_down() && !armIsLowered()) {
+			// lower arm motor
 		}
 
 	}
