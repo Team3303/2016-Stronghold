@@ -51,7 +51,7 @@ class Robot: public IterativeRobot
 		solenoid1.Set(DoubleSolenoid::Value::kForward);
 	}
 
-	boolean armIsRaised(){
+	bool armIsRaised(){
 		if (top_left_defense_arm.Get() || top_right_defense_arm.Get()) {
 			return true;
 		} else {
@@ -59,7 +59,7 @@ class Robot: public IterativeRobot
 		}
 	}
 
-	boolean armIsLowered(){
+	bool armIsLowered(){
 		if (bottom_left_defense_arm.Get() || bottom_right_defense_arm.Get()) {
 			return true;
 		} else {
