@@ -13,6 +13,7 @@ class Robot: public IterativeRobot
 	float SPEED_MODIFIER = 1.0;
 	DoubleSolenoid solenoid1;
 	Compressor *c = new Compressor(0);
+	//PCM *pcm = new PCM(0);
 	Timer time_since, auto_time, shoot_time;
 	bool x_btn() { return gamepad.GetRawButton(1); }
 	bool a_btn() { return gamepad.GetRawButton(2); }
@@ -82,7 +83,7 @@ public:
 	Robot() :
 		myRobot(0, 1),	// these must be initialized in the same order
 		shooter(2),
-		shooter_stop(0),
+		shooter_stop(1),
 		stick1(0),
 		stick2(1),
 		gamepad(2),// as they are declared above.
@@ -96,8 +97,8 @@ public:
 
 private:
 	void RobotInit() {
-//		CameraServer::GetInstance()->SetQuality(50);
-//		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+ 		CameraServer::GetInstance()->SetQuality(50);
+		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 		c->SetClosedLoopControl(true);
 		gyro.InitGyro();
 	}
@@ -111,6 +112,7 @@ private:
 	    auto_time.Start();                    //start autonomous timer
 	    gyro.Reset();
 		gyro.SetSensitivity(voltsPerDegreePerSecond);
+		raise();
 
 		/*myRobot.SetInvertedMotor(myRobot.kFrontLeftMotor, true);
 		myRobot.SetInvertedMotor(myRobot.kFrontRightMotor, true);
@@ -146,6 +148,7 @@ private:
 			myRobot.Drive(-0.75, 0.0);              //drive forward
 
 		}else if(auto_time.Get() <= period1 + period2){
+
 
 			align(60);
 
