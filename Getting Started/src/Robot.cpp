@@ -6,7 +6,11 @@ class Robot: public IterativeRobot
 
 	RobotDrive myRobot; // robot drive system
 	Talon shooter;
-	DigitalInput shooter_stop;
+	DigitalInput shooter_stop,
+				 top_left_defense_arm,
+				 bottom_left_defense_arm,
+				 top_right_defense_arm,
+				 bottom_right_defense_arm;
 	Joystick stick1, stick2, gamepad; // only joystick
 	LiveWindow *lw;
 	int autoLoopCounter;
@@ -47,6 +51,22 @@ class Robot: public IterativeRobot
 		solenoid1.Set(DoubleSolenoid::Value::kForward);
 	}
 
+	boolean armIsRaised(){
+		if (top_left_defense_arm.Get() || top_right_defense_arm.Get()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	boolean armIsLowered(){
+		if (bottom_left_defense_arm.Get() || bottom_right_defense_arm.Get()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/*void drive(float seconds,float speed,float turn){
 
 		myRobot.Drive(speed, turn);
@@ -84,6 +104,10 @@ public:
 		myRobot(0, 1),	// these must be initialized in the same order
 		shooter(2),
 		shooter_stop(1),
+		top_left_defense_arm(2),
+		bottom_left_defense_arm(3),
+		top_right_defense_arm(4),
+		bottom_right_defense_arm(5),
 		stick1(0),
 		stick2(1),
 		gamepad(2),// as they are declared above.
