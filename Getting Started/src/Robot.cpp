@@ -6,6 +6,7 @@ class Robot: public IterativeRobot
 
 	RobotDrive myRobot; // robot drive system
 	Talon shooter;
+	TalonSRX armDrive;
 	DigitalInput shooter_stop,
 				 top_left_defense_arm,
 				 bottom_left_defense_arm,
@@ -118,6 +119,7 @@ public:
 	Robot() :
 		myRobot(0, 1),	// these must be initialized in the same order
 		shooter(2),
+		armDrive(3),
 		shooter_stop(1),
 		top_left_defense_arm(2),
 		bottom_left_defense_arm(3),
@@ -244,6 +246,7 @@ private:
 		SmartDashboard::PutString("DB/String 2", gyro_center);
 		SmartDashboard::PutString("DB/String 3", gyro_offset);
 
+		// Reset Gyro
 		if(rb()){
 			gyro.Reset();
 		}
@@ -252,22 +255,37 @@ private:
 //		myRobot.ArcadeDrive(rstick_y(),rstick_x());
 		myRobot.TankDrive(lstick_y(),rstick_y());
 
-		//Shooter pulls in when x button pressed and limit switch not triggered
+		// Shooter pulls in when x button pressed and limit switch not triggered
 		if(shooter_stop.Get()){
 			if(x_btn()){
 				shooter.Set(-0.5);
 			}
 		}
-		//Shooter shoots if limit switch pressed for as long as y pressed
+		// Shooter shoots if limit switch pressed for as long as y pressed
 		else{
 			shooter.Set(0.0);
 		}
 
+		// Shoot Ball Controls
 		if(y_btn()){
 			shooter.Set(1.0);
 		}
 
+		// Pneumatic Raise and Lower Controls
+		if(b_btn()){
+			raise();
+		} else if(a_btn()){
+			lower();
+		}
 
+		// Defense Arm Controls
+		if(d_pad_up() && !armIsRaised()) {
+			armDrive.Set(1.0);
+		} else if(d_pad_down() && !armIsLowered()) {
+			armDrive.Set(-1.0);
+		}
+
+		// Killswitch controls
 		if(lt() && rt()) {
 			if (start_btn()) {
 				shooter.Set(0.0);
@@ -275,18 +293,6 @@ private:
 			else if (y_btn()) {
 				shooter.Set(1.0);
 			}
-		}
-
-		if(b_btn()){
-			raise();
-		} else if(a_btn()){
-			lower();
-		}
-
-		if(d_pad_up() && !armIsRaised()) {
-			// raise arm motor
-		} else if(d_pad_down() && !armIsLowered()) {
-			// lower arm motor
 		}
 
 	}
